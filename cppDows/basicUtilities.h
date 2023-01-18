@@ -1,9 +1,25 @@
 #pragma once
 #include <Windows.h>
+#include <cwchar>
 HANDLE COUT = 0;    // 콘솔 출력 장치
 HANDLE CIN = 0;        // 콘솔 입력 장치
+int x;
+int y;
+
+void changeFont(int n) {
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(cfi);
+    cfi.nFont = 0;
+    cfi.dwFontSize.X = 0;                   // Width of each character in the font
+    cfi.dwFontSize.Y = n;                  // Height
+    cfi.FontFamily = FF_DONTCARE;
+    cfi.FontWeight = FW_NORMAL;
+    std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+}
 
 void setConsole() {
+    changeFont(6);
     system("mode con COLS=700");
     ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
     SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
@@ -45,4 +61,29 @@ void gotoxy(int x, int y) {
     Cur.X = x;
     Cur.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
+}
+
+void mouseInput() {
+    DWORD mode;
+    WORD key;
+    COORD pos;
+
+    int event;
+
+    CIN = GetStdHandle(STD_INPUT_HANDLE);
+    COUT = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleMode(CIN, &mode);
+    SetConsoleMode(CIN, mode | ENABLE_MOUSE_INPUT);
+
+    while (1) {
+        if (be_input()) {
+            if (get_input(&key, &pos) != 0) {
+                MOUSE_EVENT;
+                x = pos.X;
+                y = pos.Y;
+                gotoxy(x, y);
+                printf("%d %d", x, y);
+            }
+        }
+    }
 }
