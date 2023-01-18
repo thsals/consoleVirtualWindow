@@ -1,8 +1,8 @@
 #pragma once
 #include <Windows.h>
 #include <cwchar>
-HANDLE COUT = 0;    // 콘솔 출력 장치
-HANDLE CIN = 0;        // 콘솔 입력 장치
+HANDLE COUT = 0;
+HANDLE CIN = 0;
 int x;
 int y;
 
@@ -10,11 +10,11 @@ void changeFont(int n) {
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(cfi);
     cfi.nFont = 0;
-    cfi.dwFontSize.X = 0;                   // Width of each character in the font
-    cfi.dwFontSize.Y = n;                  // Height
+    cfi.dwFontSize.X = 0;
+    cfi.dwFontSize.Y = n;
     cfi.FontFamily = FF_DONTCARE;
     cfi.FontWeight = FW_NORMAL;
-    std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+    std::wcscpy(cfi.FaceName, L"Consolas");
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
 
