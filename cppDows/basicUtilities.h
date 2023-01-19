@@ -1,10 +1,36 @@
 #pragma once
 #include <Windows.h>
 #include <cwchar>
+#include <thread>
+#include <vector>
+#define consoleHorizontal 700
+#define consoleVertical 188
+using std::thread;
+using std::vector;
 HANDLE COUT = 0;
 HANDLE CIN = 0;
 int x;
 int y;
+
+
+enum Color {
+    BLACK,
+    BLUE,
+    GREEN,
+    CYAN,
+    RED,
+    MAGENTA,
+    BROWN,
+    LIGHTGRAY,
+    DARKGRAY,
+    LIGHTBLUE,
+    LIGHTGREEN,
+    LIGHTCYAN,
+    LIGHTRED,
+    LIGHTMAGENTA,
+    YELLOW,
+    WHITE
+};
 
 void changeFont(int n) {
     CONSOLE_FONT_INFOEX cfi;
@@ -23,6 +49,16 @@ void setConsole() {
     system("mode con COLS=700");
     ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
     SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
+
+    HANDLE hConsole;
+    CONSOLE_CURSOR_INFO ConsoleCursor;
+
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    ConsoleCursor.bVisible = false;
+    ConsoleCursor.dwSize = 1;
+
+    SetConsoleCursorInfo(hConsole, &ConsoleCursor);
 }
 
 int be_input() {
@@ -86,4 +122,12 @@ void mouseInput() {
             }
         }
     }
+}
+
+void printPixel(int x,int y,int color) {
+
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color * 16 + color);
+    gotoxy(x, y);
+    printf(" ");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0 * 16 + 0);
 }

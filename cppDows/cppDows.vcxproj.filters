@@ -29,5 +29,8 @@
     <ClInclude Include="Administrator.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="installWindow.h">
+      <Filter>소스 파일\installingWindow</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
