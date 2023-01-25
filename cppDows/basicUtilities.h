@@ -3,35 +3,15 @@
 #include <cwchar>
 #include <thread>
 #include <vector>
+#include "console.h"
 #define consoleHorizontal 700
 #define consoleVertical 188
 using std::thread;
 using std::vector;
+CConsoleScreen ConsoleScreen;
 HANDLE COUT = 0;
 HANDLE CIN = 0;
-int x;
-int y;
-
-
-enum Color {
-    BLACK,
-    BLUE,
-    GREEN,
-    CYAN,
-    RED,
-    MAGENTA,
-    BROWN,
-    LIGHTGRAY,
-    DARKGRAY,
-    LIGHTBLUE,
-    LIGHTGREEN,
-    LIGHTCYAN,
-    LIGHTRED,
-    LIGHTMAGENTA,
-    YELLOW,
-    WHITE
-};
-
+/*
 void changeFont(int n) {
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(cfi);
@@ -42,10 +22,10 @@ void changeFont(int n) {
     cfi.FontWeight = FW_NORMAL;
     std::wcscpy(cfi.FaceName, L"Consolas");
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-}
+}*/
 
 void setConsole() {
-    changeFont(6);
+    //changeFont(6);
     system("mode con COLS=700");
     ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
     SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
@@ -115,19 +95,54 @@ void mouseInput() {
         if (be_input()) {
             if (get_input(&key, &pos) != 0) {
                 MOUSE_EVENT;
-                x = pos.X;
-                y = pos.Y;
-                gotoxy(x, y);
-                printf("%d %d", x, y);
+                int x = pos.X;
+                int y = pos.Y;
+              //  ConsoleScreen.DrawPoint(x, y, Support_Library::RED, Support_Library::RED, ' ');
             }
         }
     }
 }
 
-void printPixel(int x,int y,int color) {
 
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color * 16 + color);
-    gotoxy(x, y);
-    printf(" ");
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0 * 16 + 0);
+VOID setScreen( ) {
+    ConsoleScreen.Create(Width, Height, "Å×½ºÆ®", WHITE, BLACK);
+    ConsoleScreen.SetCursorState(FALSE);
+
+    DOUBLE Rad = 0.0f;
+
+    SHORT FontPosX = -30;
+
+    DWORD FpsCount = 0;
+    DWORD Fps = 0;
+    DWORD NextGetTickCount = GetTickCount();
+
+
+
+    while (TRUE)
+    {
+        DWORD CurrenGetTickCount = GetTickCount();
+        for (SHORT X = 0; X <= Width; X++)
+        {
+            for (SHORT Y = 0; Y <= Height; Y++)
+            {
+                ConsoleScreen.DrawPoint(X, Y, BLUE, BLUE, ' ');
+            }
+        }
+        if (CurrenGetTickCount >= NextGetTickCount)
+        {
+            NextGetTickCount += 1000;
+            Fps = FpsCount;
+            FpsCount = 0;
+        }
+
+        ConsoleScreen.Rander();
+
+        FpsCount++;
+        FontPosX++;
+        Rad += 0.05f;
+    }
+
+    ConsoleScreen.Destroy();
+
+    return;
 }
