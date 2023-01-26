@@ -187,6 +187,7 @@ public:
 
 		for (int height = 0; height < m_iHeight; ++height)
 		{
+			
 			tempCoord.Y = height;
 			CHAR* outCharBuffer = frontCharBuffer[height];
 			WORD* outColorBuffer = frontColorBuffer[height];
@@ -210,10 +211,11 @@ public:
 
 	VOID DrawPoint(SHORT X, SHORT Y, COLOR_LIST FontColor, COLOR_LIST BackColor, CHAR Char)
 	{
-		if (X >= m_iWidth || Y >= m_iHeight || X < 0 || Y < 0)
+		if( X >= m_iWidth || Y >= m_iHeight || X < 0 || Y < 0 )
 			return;
 
 		// NextBuffer ¿¡ ±â·Ï
+		m_ArrayScreenCharBuffer[m_NextBufferIndex][Y][X] = Char;
 		m_ArrayScreenColorBuffer[m_NextBufferIndex][Y][X] = BackColor << 4 | FontColor;
 	}
 
@@ -232,8 +234,5 @@ public:
 		for (SHORT i = 0; i < Length; i++)
 			DrawPoint(X + i, Y, FontColor, BackColor, TempBuffer[i]);
 	}
-
-	VOID DrawLine(SHORT X1, SHORT Y1, SHORT X2, SHORT Y2, COLOR_LIST FontColor, COLOR_LIST BackColor, CHAR Char)
-	{}
 
 };

@@ -7,10 +7,13 @@
 using namespace std;
 using std::thread;
 int main() {
-    setConsole();
+    //setConsole();
+       
 
-    namePage();
-
-    
+   // thread t1(setScreen);
+    //thread t2(mouseInput);
     setScreen();
+    
+    //t2.join();
+   // t1.join();
 }

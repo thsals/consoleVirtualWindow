@@ -11,7 +11,7 @@ using std::vector;
 CConsoleScreen ConsoleScreen;
 HANDLE COUT = 0;
 HANDLE CIN = 0;
-/*
+
 void changeFont(int n) {
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(cfi);
@@ -22,23 +22,6 @@ void changeFont(int n) {
     cfi.FontWeight = FW_NORMAL;
     std::wcscpy(cfi.FaceName, L"Consolas");
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-}*/
-
-void setConsole() {
-    //changeFont(6);
-    system("mode con COLS=700");
-    ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
-    SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000);
-
-    HANDLE hConsole;
-    CONSOLE_CURSOR_INFO ConsoleCursor;
-
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    ConsoleCursor.bVisible = false;
-    ConsoleCursor.dwSize = 1;
-
-    SetConsoleCursorInfo(hConsole, &ConsoleCursor);
 }
 
 int be_input() {
@@ -97,12 +80,14 @@ void mouseInput() {
                 MOUSE_EVENT;
                 int x = pos.X;
                 int y = pos.Y;
-              //  ConsoleScreen.DrawPoint(x, y, Support_Library::RED, Support_Library::RED, ' ');
+                //ConsoleScreen.DrawPoint(x, y, RED, RED, ' ');
+                gotoxy(x, y);
+                
+                printf(" ");
             }
         }
     }
 }
-
 
 VOID setScreen( ) {
     ConsoleScreen.Create(Width, Height, "테스트", WHITE, BLACK);
@@ -116,11 +101,22 @@ VOID setScreen( ) {
     DWORD Fps = 0;
     DWORD NextGetTickCount = GetTickCount();
 
+    DWORD CurrenGetTickCount = GetTickCount();
 
 
-    while (TRUE)
-    {
-        DWORD CurrenGetTickCount = GetTickCount();
+    DWORD mode;
+    WORD key;
+    COORD pos;
+
+    int event;
+
+    CIN = GetStdHandle(STD_INPUT_HANDLE);
+    COUT = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleMode(CIN, &mode);
+    SetConsoleMode(CIN, mode | ENABLE_MOUSE_INPUT);
+    while (TRUE) {
+
+        
         for (SHORT X = 0; X <= Width; X++)
         {
             for (SHORT Y = 0; Y <= Height; Y++)
@@ -134,15 +130,26 @@ VOID setScreen( ) {
             Fps = FpsCount;
             FpsCount = 0;
         }
+        
+        
+        ConsoleScreen.DrawFont(100, 5, WHITE, BLUE, "이 PC를 누가 사용하나요?");
+
+
+        if (be_input()) {
+            if (get_input(&key, &pos) != 0) {
+                MOUSE_EVENT;
+                int x = pos.X;
+                int y = pos.Y;
+                ConsoleScreen.DrawPoint(x, y, BLACK, BLACK, ' ');
+            }
+        }
 
         ConsoleScreen.Rander();
 
         FpsCount++;
         FontPosX++;
         Rad += 0.05f;
+        
     }
-
-    ConsoleScreen.Destroy();
-
     return;
 }
