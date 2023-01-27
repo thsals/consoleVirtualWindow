@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="Administrator.h" />
     <ClInclude Include="basicUtilities.h" />
+    <ClInclude Include="images.h" />
     <ClInclude Include="installWindow.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="consoleDefine.h" />

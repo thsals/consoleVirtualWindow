@@ -8,7 +8,7 @@ using namespace std;
 using std::thread;
 int main() {
     //setConsole();
-       
+    changeFont(36);
 
    // thread t1(setScreen);
     //thread t2(mouseInput);

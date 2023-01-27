@@ -3,7 +3,9 @@
 #include <cwchar>
 #include <thread>
 #include <vector>
+#include <string>
 #include "console.h"
+#include "images.h"
 #define consoleHorizontal 700
 #define consoleVertical 188
 using std::thread;
@@ -120,36 +122,37 @@ VOID setScreen( ) {
         for (SHORT X = 0; X <= Width; X++)
         {
             for (SHORT Y = 0; Y <= Height; Y++)
-            {
-                ConsoleScreen.DrawPoint(X, Y, BLUE, BLUE, ' ');
+            {   
+                ConsoleScreen.DrawPoint(X, Y, D_BLUE, D_BLUE, ' ');
             }
         }
-        if (CurrenGetTickCount >= NextGetTickCount)
-        {
-            NextGetTickCount += 1000;
-            Fps = FpsCount;
-            FpsCount = 0;
+        int isClick = 0;
+        char firstString[50] = "이 PC를 누가 사용하나요?";
+        ConsoleScreen.DrawFont(40, 3, WHITE, D_BLUE, firstString);
+        for (int i = 0; i < strlen(firstString); i++) {
+            ConsoleScreen.DrawPoint(40 + i, 23, WHITE, WHITE, ' ');
         }
-        
-        
-        ConsoleScreen.DrawFont(100, 5, WHITE, BLUE, "이 PC를 누가 사용하나요?");
 
+        for (int i = 0; i < 14; i++) {
+            for (int j = 0; j < 15; j++) {
+                if (profileIcon[i][j] == 1) {
+                    ConsoleScreen.DrawPoint(45 + j, 6 + i, GRAY, GRAY, ' ');
+                }
+            }
+        }
+
+        ConsoleScreen.DrawFont(88, 25, WHITE, BLUE, " 다음 ");
 
         if (be_input()) {
             if (get_input(&key, &pos) != 0) {
                 MOUSE_EVENT;
                 int x = pos.X;
                 int y = pos.Y;
-                ConsoleScreen.DrawPoint(x, y, BLACK, BLACK, ' ');
+
             }
         }
 
-        ConsoleScreen.Rander();
-
-        FpsCount++;
-        FontPosX++;
-        Rad += 0.05f;
-        
+        ConsoleScreen.Rander();        
     }
     return;
 }
