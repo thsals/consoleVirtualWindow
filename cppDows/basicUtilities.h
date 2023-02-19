@@ -13,6 +13,7 @@ using std::vector;
 CConsoleScreen ConsoleScreen;
 HANDLE COUT = 0;
 HANDLE CIN = 0;
+int isClick = 0;
 
 void changeFont(int n) {
     CONSOLE_FONT_INFOEX cfi;
@@ -82,17 +83,19 @@ void mouseInput() {
                 MOUSE_EVENT;
                 int x = pos.X;
                 int y = pos.Y;
-                //ConsoleScreen.DrawPoint(x, y, RED, RED, ' ');
-                gotoxy(x, y);
                 
-                printf(" ");
+                if (y == 23) {
+                    if (x >= 43 && x <= 67) {
+                        isClick = 1;
+                    }
+                }
             }
         }
     }
 }
 
 VOID setScreen( ) {
-    ConsoleScreen.Create(Width, Height, "Å×½ºÆ®", WHITE, BLACK);
+    ConsoleScreen.Create(Width, Height, "í…ŒìŠ¤íŠ¸", WHITE, BLACK);
     ConsoleScreen.SetCursorState(FALSE);
 
     DOUBLE Rad = 0.0f;
@@ -106,16 +109,8 @@ VOID setScreen( ) {
     DWORD CurrenGetTickCount = GetTickCount();
 
 
-    DWORD mode;
-    WORD key;
-    COORD pos;
+    thread Mouse(mouseInput);
 
-    int event;
-
-    CIN = GetStdHandle(STD_INPUT_HANDLE);
-    COUT = GetStdHandle(STD_OUTPUT_HANDLE);
-    GetConsoleMode(CIN, &mode);
-    SetConsoleMode(CIN, mode | ENABLE_MOUSE_INPUT);
     while (TRUE) {
 
         
@@ -126,13 +121,22 @@ VOID setScreen( ) {
                 ConsoleScreen.DrawPoint(X, Y, D_BLUE, D_BLUE, ' ');
             }
         }
-        int isClick = 0;
-        char firstString[50] = "ÀÌ PC¸¦ ´©°¡ »ç¿ëÇÏ³ª¿ä?";
-        ConsoleScreen.DrawFont(40, 3, WHITE, D_BLUE, firstString);
-        for (int i = 0; i < strlen(firstString); i++) {
-            ConsoleScreen.DrawPoint(40 + i, 23, WHITE, WHITE, ' ');
-        }
 
+        
+        char firstString[50] = "ì´ PCë¥¼ ëˆ„ê°€ ì‚¬ìš©í•˜ë‚˜ìš”?";
+        ConsoleScreen.DrawFont(40, 3, WHITE, D_BLUE, firstString);
+
+
+        for (int i = 0; i < strlen(firstString); i++) {
+            if (i == 0 && isClick != 0) {
+                ConsoleScreen.DrawPoint(40 + i, 23, BLACK, BLACK, ' ');
+            }else {
+                ConsoleScreen.DrawPoint(40 + i, 23, WHITE, WHITE, ' ');
+            }
+            
+        }
+        
+        //í”„ë¡œí•„ ì•„ì´ì½˜ ì¶œë ¥í•´ì£¼ê¸°
         for (int i = 0; i < 14; i++) {
             for (int j = 0; j < 15; j++) {
                 if (profileIcon[i][j] == 1) {
@@ -141,18 +145,12 @@ VOID setScreen( ) {
             }
         }
 
-        ConsoleScreen.DrawFont(88, 25, WHITE, BLUE, " ´ÙÀ½ ");
+        ConsoleScreen.DrawFont(88, 25, WHITE, BLUE, " ë‹¤ìŒ ");
 
-        if (be_input()) {
-            if (get_input(&key, &pos) != 0) {
-                MOUSE_EVENT;
-                int x = pos.X;
-                int y = pos.Y;
-
-            }
-        }
+        
 
         ConsoleScreen.Rander();        
     }
+    Mouse.join();
     return;
 }
